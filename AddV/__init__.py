@@ -1,5 +1,4 @@
-  
-# GetValue
+# AddV
 # 2021 Yong-Jun Shin
 
 # Ctrl-Shift-P --> Terminal: Create New Integrated Terminal
@@ -11,20 +10,23 @@
 import logging
 from gremlin_python.driver import client, serializer
 import azure.functions as func
-import json 
+import json
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+
     req_body = req.get_json()
-    id = req_body.get('id') # vertex id
+    label = req_body.get('label')
+    value = req_body.get('value')
+    
     dbclient = client.Client('wss://peridymegraph.gremlin.cosmos.azure.com:443/','g', 
     message_serializer=serializer.GraphSONSerializersV2d0(),
     username="/dbs/db/colls/Graph1", 
     password="47ONfPHcunYSxeR8elFB4JpKED2Rei1mFANxpMyfPDOU8tX2ZIE1gNYJ9Pl7NY2DRZ0IouKwuxyy8nqPOqXrQg==")
-    query = f"g.V('{id}').values('value')"
+    query = f"g.addV('{label}').property('value', '{value}').property('pk', 'pk')"
     callback = dbclient.submitAsync(query)
-    output = json.dumps(callback.result().all().result()[0])
-    response_data = {"output": output}
+    callback_result = json.dumps(callback.result().all().result())
     dbclient.close()
-    return func.HttpResponse(body = json.dumps(response_data))
+    return func.HttpResponse(body = callback_result)
+
 
