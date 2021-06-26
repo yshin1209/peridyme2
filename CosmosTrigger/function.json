@@ -1,0 +1,25 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "type": "cosmosDBTrigger",
+      "name": "documents",
+      "direction": "in",
+      "connectionStringSetting": "peridymegraph",
+      "databaseName": "db",
+      "collectionName": "Graph1",
+      "leaseConnectionStringSetting": "peridymesql",
+      "leaseDatabaseName": "db",
+      "leaseCollectionName": "leases",
+      "createLeaseCollectionIfNotExists": true
+    },
+    {
+      "type": "eventGrid",
+      "name": "outputEvent",
+      "topicEndpointUri": "topicEndpointUri",
+      "topicKeySetting": "topicKeySetting",
+      "direction": "out"
+    }
+  ]
+}
+
