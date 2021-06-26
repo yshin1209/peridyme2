@@ -1,4 +1,5 @@
-# AddE
+  
+# SetVProperty
 # 2021 Yong-Jun Shin
 
 # Ctrl-Shift-P --> Terminal: Create New Integrated Terminal
@@ -15,16 +16,30 @@ import json
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     req_body = req.get_json()
-    outV = req_body.get('outV') # out vertex
-    edgeLabel = req_body.get('edgeLabel') # edge label
-    inV = req_body.get('inV') # in vertex
+    input_id = req_body.get('id')   # vertex id
+    key = req_body.get('key') # vertex property key
+    value = req_body.get('value') # vertex perperty value
 
     dbclient = client.Client('wss://peridymegraph.gremlin.cosmos.azure.com:443/','g', 
     message_serializer=serializer.GraphSONSerializersV2d0(),
     username="/dbs/db/colls/Graph1", 
     password="47ONfPHcunYSxeR8elFB4JpKED2Rei1mFANxpMyfPDOU8tX2ZIE1gNYJ9Pl7NY2DRZ0IouKwuxyy8nqPOqXrQg==")
-    query = f"g.V('{outV}').addE('{edgeLabel}').to(g.V('{inV}'))"
+
+    if type(value) == str:
+        query = f"g.V('{input_id}').property('{key}', '{value}')"
+    elif type(value) == bool:
+        if value == True:
+            value = 'true'
+        elif value == False:
+            value = 'false'
+        query = f"g.V('{input_id}').property('{key}', {value})"
+    else: query = f"g.V('{input_id}').property('{key}', {value})"
+    
     callback = dbclient.submitAsync(query)
-    callback_result = json.dumps(callback.result().all().result())
+    callback_result = callback.result().all().result()
+    response_json = json.dumps(callback_result)
+    logging.info(response_json)
     dbclient.close()
-    return func.HttpResponse(body = callback_result)
+    return func.HttpResponse(body = response_json)
+
+

@@ -1,4 +1,4 @@
-# AddE
+# RemoveE
 # 2021 Yong-Jun Shin
 
 # Ctrl-Shift-P --> Terminal: Create New Integrated Terminal
@@ -16,14 +16,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     req_body = req.get_json()
     outV = req_body.get('outV') # out vertex
-    edgeLabel = req_body.get('edgeLabel') # edge label
     inV = req_body.get('inV') # in vertex
 
     dbclient = client.Client('wss://peridymegraph.gremlin.cosmos.azure.com:443/','g', 
     message_serializer=serializer.GraphSONSerializersV2d0(),
     username="/dbs/db/colls/Graph1", 
     password="47ONfPHcunYSxeR8elFB4JpKED2Rei1mFANxpMyfPDOU8tX2ZIE1gNYJ9Pl7NY2DRZ0IouKwuxyy8nqPOqXrQg==")
-    query = f"g.V('{outV}').addE('{edgeLabel}').to(g.V('{inV}'))"
+    query = f"g.V('{outV}').outE().where(otherV().hasId('{inV}')).drop()"
     callback = dbclient.submitAsync(query)
     callback_result = json.dumps(callback.result().all().result())
     dbclient.close()
