@@ -7,7 +7,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
     endpoint = "https://eventtopic.westus-1.eventgrid.azure.net/api/events"
-    credential = AzureKeyCredential("Ce0gjIxS3z3xHwHsxNykjh9wBXw+Ab8sQyL7+NJbyqo=")
+    credential = AzureKeyCredential("")
     client = EventGridPublisherClient(endpoint, credential)
     
     event = EventGridEvent(
