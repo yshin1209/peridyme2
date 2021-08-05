@@ -23,7 +23,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     dbclient = client.Client('wss://peridymegraph.gremlin.cosmos.azure.com:443/','g', 
     message_serializer=serializer.GraphSONSerializersV2d0(),
     username="/dbs/db/colls/Graph1", 
-    password="47ONfPHcunYSxeR8elFB4JpKED2Rei1mFANxpMyfPDOU8tX2ZIE1gNYJ9Pl7NY2DRZ0IouKwuxyy8nqPOqXrQg==")
+    password="")
 
     if type(value) == str:
         query = f"g.V('{input_id}').property('value', '{value}')"
